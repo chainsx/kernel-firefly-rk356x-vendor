@@ -1,0 +1,23 @@
+// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+/*
+ * Copyright (c) 2022 Rockchip Electronics Co., Ltd.
+ *
+ */
+
+#include "rk3568-firefly-aioj.dts"
+#include "rk3568-amp.dtsi"
+
+/ {
+	memory {
+		device_type = "memory";
+		reg = <0x0 0x03880000 0x0 0x04b80000>,
+		      <0x0 0x08400000 0x0 0x77c00000>;
+	};
+};
+
+&arm_pmu {
+    interrupt-affinity = <&cpu0>, <&cpu1>, <&cpu2>;
+};
+
+/delete-node/ &cpu3;
+

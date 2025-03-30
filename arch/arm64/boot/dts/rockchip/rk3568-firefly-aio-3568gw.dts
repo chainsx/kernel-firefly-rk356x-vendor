@@ -1,0 +1,19 @@
+// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+/*
+ * Copyright (c) 2020 Rockchip Electronics Co., Ltd.
+ *
+ */
+
+/dts-v1/;
+
+#include "rk3568-firefly-aio-3568gw.dtsi"
+
+/ {
+    model = "AIO-3568GW HDMI (Linux)";
+    compatible = "rockchip,rk3568-firefly-aio-3568gw", "rockchip,rk3568";
+};
+
+&route_hdmi {
+    status = "okay";
+    connect = <&vp0_out_hdmi>;
+};
