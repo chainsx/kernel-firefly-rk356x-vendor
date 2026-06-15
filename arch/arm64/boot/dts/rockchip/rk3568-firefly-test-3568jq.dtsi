@@ -1,0 +1,309 @@
+// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+/*
+ * Copyright (c) 2020 Rockchip Electronics Co., Ltd.
+ *
+ */
+
+#include "rk3568-firefly-core.dtsi"
+#include "rk3568-linux.dtsi"
+
+/ {
+	vcc5v0_host: vcc5v0-host-regulator {
+		compatible = "regulator-fixed";
+		enable-active-high;
+		gpio = <&gpio0 RK_PA5 GPIO_ACTIVE_HIGH>;
+		pinctrl-names = "default";
+		pinctrl-0 = <&vcc5v0_host_en>;
+		regulator-name = "vcc5v0_host";
+		regulator-always-on;
+		regulator-boot-on;
+	};
+
+	vcc5v0_otg: vcc5v0-otg-regulator {
+		compatible = "regulator-fixed";
+		enable-active-high;
+		gpio = <&gpio0 RK_PC5 GPIO_ACTIVE_HIGH>;
+		pinctrl-names = "default";
+		pinctrl-0 = <&vcc5v0_otg_en>;
+		regulator-name = "vcc5v0_otg";
+	};
+
+	adc_keys: adc-keys {
+		compatible = "adc-keys";
+		io-channels = <&saradc 0>;
+		io-channel-names = "buttons";
+		keyup-threshold-microvolt = <1800000>;
+		poll-interval = <100>;
+
+		recovery-key {
+			label = "F12";
+			linux,code = <KEY_F12>;
+			press-threshold-microvolt = <1750>;
+		};
+	};
+
+	firefly_leds: leds {
+		status = "okay";
+		compatible = "gpio-leds";
+
+		power_led: power {
+			label = "right_down:green:power";
+			linux,default-trigger = "ir-power-click";
+			default-state = "on";
+			gpios = <&gpio2 RK_PD0 GPIO_ACTIVE_HIGH>;
+			pinctrl-names = "default";
+			pinctrl-0 = <&led_power>;
+		};
+
+		user_led1: user1 {
+			label = "right_up:yellow:user1";
+			linux,default-trigger = "ir-user-click";
+			default-state = "off";
+			gpios = <&gpio2 RK_PD7 GPIO_ACTIVE_HIGH>;
+			pinctrl-names = "default";
+			pinctrl-0 = <&led_user1>;
+		};
+
+		user_led2: user2 {
+			label = "left_down:green:user2";
+			linux,default-trigger = "ir-user-click";
+			default-state = "off";
+			gpios = <&gpio2 RK_PD5 GPIO_ACTIVE_HIGH>;
+			pinctrl-names = "default";
+			pinctrl-0 = <&led_user2>;
+		};
+
+		user_led3: user3 {
+			label = "left_up:yellow:user3";
+			linux,default-trigger = "ir-user-click";
+			default-state = "off";
+			gpios = <&gpio2 RK_PD4 GPIO_ACTIVE_HIGH>;
+			pinctrl-names = "default";
+			pinctrl-0 = <&led_user3>;
+		};
+	};
+
+	fan: pwm-fan {
+		compatible = "pwm-fan";
+		#cooling-cells = <2>;
+		pwms = <&pwm11 0 50000 1>;
+		cooling-levels = <0 50 100 150 200 255>;
+		rockchip,temp-trips = <
+			50000 1
+			55000 2
+			60000 3
+			65000 4
+			70000 5
+		>;
+	};
+
+	/delete-node/ rk-headset;
+};
+
+&pwm4 {
+	status = "disabled";
+};
+
+&pwm5 {
+	status = "disabled";
+};
+
+&pwm11 {
+	status = "okay";
+	pinctrl-names = "active";
+	pinctrl-0 = <&pwm11m1_pins>;
+};
+
+&combphy0_us {
+	status = "okay";
+};
+
+&usb2phy0 {
+	status = "okay";
+};
+
+&u2phy0_host {
+	status = "disabled";
+};
+
+&u2phy0_otg {
+	vbus-supply = <&vcc5v0_otg>;
+	status = "okay";
+};
+
+&usb2phy1 {
+	status = "okay";
+};
+
+&u2phy1_host {
+	status = "disabled";
+};
+
+&u2phy1_otg {
+	phy-supply = <&vcc5v0_host>;
+	status = "okay";
+};
+
+&usb_host0_ehci {
+	status = "okay";
+};
+
+&usb_host0_ohci {
+	status = "okay";
+};
+
+&usb_host1_ehci {
+	status = "disabled";
+};
+
+&usb_host1_ohci {
+	status = "disabled";
+};
+
+&usbdrd30 {
+	status = "okay";
+};
+
+&usbdrd_dwc3 {
+	dr_mode = "otg";
+	extcon = <&usb2phy0>;
+	status = "okay";
+};
+
+&usbhost30 {
+	status = "disabled";
+};
+
+&usbhost_dwc3 {
+	status = "disabled";
+};
+
+&sdmmc0 {
+	status = "okay";
+};
+
+&can1 {
+	status = "okay";
+	compatible = "rockchip,rk3568-can-2.0";
+	assigned-clocks = <&cru CLK_CAN1>;
+	assigned-clock-rates = <200000000>;
+	pinctrl-names = "default";
+	pinctrl-0 = <&can1m1_pins>;
+};
+
+&i2c1 {
+	status = "okay";
+};
+
+&i2c2 {
+	status = "okay";
+};
+
+&i2c3 {
+	status = "okay";
+	pinctrl-names = "default";
+	pinctrl-0 = <&i2c3m1_xfer>;
+
+	hym8563: hym8563@51 {
+		status = "okay";
+		compatible = "haoyu,hym8563";
+		reg = <0x51>;
+		#clock-cells = <0>;
+		rtc-irq-gpio = <&gpio0 RK_PD3 IRQ_TYPE_EDGE_FALLING>;
+		clock-frequency = <32768>;
+	};
+};
+
+/* UART */
+&uart1 {
+	status = "okay";
+};
+
+&uart6 {
+	status = "okay";
+};
+/* UART END */
+
+/* RS232 */
+&uart0 {
+	status = "okay";
+};
+
+&uart3 {
+	status = "okay";
+};
+/* RS232 END */
+
+/* RS485 */
+&uart4 {
+	status = "okay";
+	pinctrl-names = "default";
+	pinctrl-0 = <&uart4m1_xfer>;
+};
+
+&uart5 {
+	status = "okay";
+	pinctrl-names = "default";
+	pinctrl-0 = <&uart5m1_xfer>;
+};
+/* RS485 END*/
+
+&uart9 {
+	status = "okay";
+	pinctrl-names = "default";
+	pinctrl-0 = <&uart9m1_xfer>;
+};
+
+&rk809_sound {
+	status = "disabled";
+};
+
+&spdif_out {
+	status = "disabled";
+};
+
+&rk809_codec {
+	status = "disabled";
+};
+
+&i2s1_8ch {
+	status = "disabled";
+};
+
+&spdif_8ch {
+	status = "disabled";
+};
+
+&vad {
+	status = "disabled";
+};
+
+&pinctrl {
+	leds {
+		led_power: led-power {
+			rockchip,pins = <2 RK_PD0 RK_FUNC_GPIO &pcfg_pull_none>;
+		};
+
+		led_user1: led-user1 {
+			rockchip,pins = <2 RK_PD7 RK_FUNC_GPIO &pcfg_pull_none>;
+		};
+
+		led_user2: led-user2 {
+			rockchip,pins = <2 RK_PD5 RK_FUNC_GPIO &pcfg_pull_none>;
+		};
+
+		led_user3: led-user3 {
+			rockchip,pins = <2 RK_PD4 RK_FUNC_GPIO &pcfg_pull_none>;
+		};
+	};
+
+	usb {
+		vcc5v0_host_en: vcc5v0-host-en {
+			rockchip,pins = <0 RK_PA5 RK_FUNC_GPIO &pcfg_pull_none>;
+		};
+
+		vcc5v0_otg_en: vcc5v0-otg-en {
+			rockchip,pins = <0 RK_PC5 RK_FUNC_GPIO &pcfg_pull_none>;
+		};
+	};
+};
