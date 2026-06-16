@@ -810,6 +810,14 @@
 	};
 };
 
+&gpu {
+	clocks = <&cru CLK_GPU>;
+	clock-names = "gpu";
+
+	mali-supply = <&vdd_gpu>;
+	status = "okay";
+};
+
 &gpu_opp_table {
 	/delete-property/ rockchip,supported-hw;
 	/delete-property/ nvmem-cells;
