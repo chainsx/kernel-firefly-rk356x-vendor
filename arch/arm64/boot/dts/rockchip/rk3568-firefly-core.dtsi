@@ -811,6 +811,13 @@
 };
 
 &gpu {
+	compatible = "rockchip,rk3568-mali", "arm,mali-bifrost";
+
+	interrupts = <GIC_SPI 40 IRQ_TYPE_LEVEL_HIGH>,
+		     <GIC_SPI 41 IRQ_TYPE_LEVEL_HIGH>,
+		     <GIC_SPI 39 IRQ_TYPE_LEVEL_HIGH>;
+	interrupt-names = "job", "mmu", "gpu";
+
 	clocks = <&cru CLK_GPU>;
 	clock-names = "gpu";
 
